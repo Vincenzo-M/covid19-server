@@ -1,0 +1,28 @@
+{
+  "name": "covid_19",
+  "version": "1.0.0",
+  "description": "covid19 fake traking app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Mirkotorrisi/covid19-server.git"
+  },
+  "keywords": [
+    "covid19",
+    "server",
+    "typescript",
+    "api"
+  ],
+  "author": "Mirko Torrisi, Letizia Giammorcaro, Alberto Torrisi, Vincenzo Miuccio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mirkotorrisi/covid19-server/issues"
+  },
+  "homepage": "https://github.com/Mirkotorrisi/covid19-server#readme",
+  "devDependencies": {
+    "typescript": "^4.1.5"
+  }
+}
