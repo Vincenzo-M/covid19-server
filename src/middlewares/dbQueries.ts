@@ -13,6 +13,36 @@ export const getSwabs = async (timeStart: number, timeEnd: number) => {
     });
 };
 
+export const getSwab = async (id: number) => {
+  const conn = await db();
+  return conn
+    .query(`SELECT * FROM swabs WHERE swab_id = ${id}`)
+    .catch((err: string | undefined) => {
+      console.log(err);
+      throw new Error(err);
+    });
+};
+
+export const getSwabForPatient = async (id: number) => {
+  const conn = await db();
+  return conn
+    .query(`SELECT * FROM swabs WHERE patient_id = ${id}`)
+    .catch((err: string | undefined) => {
+      console.log(err);
+      throw new Error(err);
+    });
+};
+
+export const showPatientAndSwabs = async (id: number) => {
+  const conn = await db();
+  return conn
+    .query(`SELECT * FROM patients INNER JOIN swabs ON patients.patient_id=swabs.patient_id WHERE swabs.patient_id='${id}'`)
+    .catch((err: string | undefined) => {
+      console.log(err);
+      throw new Error(err);
+    });
+};
+
 export const addSwambs = async (team_id:number, date:string, type:string, patient_id:number, done:boolean, positive_res:boolean ) => {
   const conn = await db();
   return conn

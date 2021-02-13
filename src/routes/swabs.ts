@@ -1,21 +1,27 @@
-import { getSwabs, addSwambs, deleteSwab} from "./../middlewares/dbQueries";
-import express from "express";
-//import Swab from '../interfaces/index';
+import { getSwabs, addSwambs,getSwabForPatient, deleteSwab} from "./../middlewares/dbQueries";
+import express, { Request, Response, NextFunction } from "express";
+
+import swab from '../interfaces/index';
 
 const router = express.Router();
 
+/*
 router.get("/", async ({ query: { startDate, endDate } }, res) => {
   const swabs = await getSwabs(Number(startDate), Number(endDate));
   res.json(swabs);
 });
+*/
+router.get("/", async ({ query: {patient_id }}:Request, res:Response) => {
+  const swabs = await getSwabForPatient(Number(patient_id));
+  res.json(swabs);
+});
 
-
-router.post('/', async({body: {team_id, date, type, patient_id, done, positive_res}},res)=>{
+router.post('/', async({body: {team_id, date, type, patient_id, done, positive_res}}:Request,res:Response)=>{
   await addSwambs(team_id, date,type,patient_id,done,positive_res);
   res.json({status:"Added"});
 });
 
-router.delete('/:id',  async ({ params: { id } }, res)=>{
+router.delete('/:id',  async ({ params: { id } }:Request, res:Response)=>{
   await deleteSwab(Number(id));
   res.json({status: "success"});
 });
