@@ -27,7 +27,7 @@ export const addSwambs = async (team_id:number, date:string, type:string, patien
 export const deleteSwab = async (id:number) => {
   const conn = await db();
   return conn
-    .query(`DELETE FROM swabs WHERE patient_id= ${id} `)
+    .query(`DELETE FROM swabs WHERE swab_id= ${id} `)
     .catch((err: string | undefined) => {
       console.log(err);
       throw new Error(err);
