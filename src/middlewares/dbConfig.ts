@@ -5,8 +5,8 @@ const db = async () => {
     connectionLimit: 10,
     host: "sql11.freemysqlhosting.net",
     port: 3306,
-    user:"sql11392622",
-    password: "tq7tpurzjS",
+    user:"",
+    password: "",
     database: "sql11392622",
   });
   return await pool.getConnection();
