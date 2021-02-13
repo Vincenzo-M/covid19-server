@@ -4,26 +4,36 @@ import {
   getAllPatients,
   deletePatient,
   updatePatient,
+  showPatientAndSwabs,
 } from "./../middlewares/dbQueries";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import Patient from "../interfaces";
+
 const router = express.Router();
 
-router.get("/:id", async ({ params: { id } }, res) => {
+/*
+router.get("/:id", async ({ params: { id } }:Request, res:Response) => {
   const patient = await getPatient(Number(id));
   res.json(patient);
 });
-
-router.get("/", async (req, res) => {
+*/
+router.get("/", async (req: Request, res: Response) => {
   const patients = await getAllPatients();
   res.json(patients);
+});
+
+router.get("/:id", async ({ params: { id } }: Request, res: Response) => {
+  const patient = await showPatientAndSwabs(Number(id));
+  res.json(patient);
 });
 
 router.post(
   "/",
   async (
-    { body: { name, email, dob, fiscal_code, address, phone, hasCovid } },
-    res
+    {
+      body: { name, email, dob, fiscal_code, address, phone, hasCovid },
+    }: Request,
+    res: Response
   ) => {
     const patients = JSON.parse(JSON.stringify(await getAllPatients()));
     const checkPatients = patients.some(
@@ -48,8 +58,8 @@ router.post(
 router.put(
   "/:id",
   async (
-    { params: { id }, body: { email, address, phone, hasCovid } },
-    res
+    { params: { id }, body: { email, address, phone, hasCovid } }: Request,
+    res: Response
   ) => {
     const patientToUpdate = await updatePatient(
       Number(id),
@@ -62,7 +72,7 @@ router.put(
   }
 );
 
-router.delete("/:id", async ({ params: { id } }, res) => {
+router.delete("/:id", async ({ params: { id } }: Request, res: Response) => {
   const deleteAccount = await deletePatient(Number(id));
   res.json({ status: "success" });
 });
