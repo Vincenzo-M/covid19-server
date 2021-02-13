@@ -54,6 +54,16 @@ export const addSwambs = async (team_id:number, date:string, type:string, patien
     });
 };
 
+export const updateSwamb = async(swab_id:number,team_id:number, date:string, type:string, patient_id:number, done:boolean, positive_res:boolean )=>{
+  const conn = await db();
+  return conn
+    .query(`UPDATE swabs SET team_id='${team_id}', date='${date}', type= '${type}', patient_id='${patient_id}', done='${done}',positive_res='${positive_res}'WHERE swab_id='${swab_id}'`)
+    .catch((err: string | undefined) => {
+      console.log(err);
+      throw new Error(err);
+    });
+};
+
 export const deleteSwab = async (id:number) => {
   const conn = await db();
   return conn
