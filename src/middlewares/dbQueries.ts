@@ -1,19 +1,51 @@
 import db from "./dbConfig";
 
-
-export const getSwabs = async (timeStart: number, timeEnd: number) => {
+export const getAllSwabsByPeriod = async (
+  startDate: string,
+  endDate: string
+) => {
   const conn = await db();
-  //non provata sicuramente non funziona
   return conn
     .query(
-      `SELECT * FROM swabs WHERE date_exec > ${timeStart} AND date_exec < ${timeEnd}`
+      `SELECT * FROM swabs WHERE date > DATE '${startDate}' AND date < DATE '${endDate}'`
     )
     .catch((err: string | undefined) => {
       throw new Error(err);
     });
 };
+export const getAllSwabsByPatient = async (patient_id: string) => {
+  const conn = await db();
+  return conn
+    .query(`SELECT * FROM swabs WHERE patient_id = ${patient_id}`)
+    .catch((err: string | undefined) => {
+      throw new Error(err);
+    });
+};
+export const getSwabById = async (swab_id: string) => {
+  const conn = await db();
+  return conn
+    .query(`SELECT * FROM swabs WHERE swab_id = ${swab_id}`)
+    .catch((err: string | undefined) => {
+      throw new Error(err);
+    });
+};
+export const deleteSwab = async (swab_id: string) => {
+  const conn = await db();
+  return conn
+    .query(`DELETE FROM swabs WHERE swab_id = ${swab_id}`)
+    .catch((err: string | undefined) => {
+      throw new Error(err);
+    });
+};
 
-export const addSwambs = async (team_id:number, date:string, type:string, patient_id:number, done:boolean, positive_res:boolean ) => {
+export const addSwab = async (
+  team_id: number,
+  date: string,
+  type: string,
+  patient_id: number,
+  done: boolean,
+  positive_res: boolean
+) => {
   const conn = await db();
   return conn
     .query(
@@ -53,7 +85,6 @@ export const newPatient = async (
     });
 };
 
-
 export const getAllPatients = async () => {
   const conn = await db();
   return conn
@@ -64,17 +95,25 @@ export const getAllPatients = async () => {
     });
 };
 
-export const updatePatient = async(id:number,email:string,address:string,phone:number,hasCovid:boolean)=>{
+export const updatePatient = async (
+  id: number,
+  email: string,
+  address: string,
+  phone: number,
+  hasCovid: boolean
+) => {
   const conn = await db();
   return conn
-    .query(`UPDATE patients SET email='${email}', address='${address}', phone= '${phone}', hasCovid='${hasCovid}' WHERE patient_id='${id}'`)
+    .query(
+      `UPDATE patients SET email='${email}', address='${address}', phone= '${phone}', hasCovid='${hasCovid}' WHERE patient_id='${id}'`
+    )
     .catch((err: string | undefined) => {
       console.log(err);
       throw new Error(err);
     });
 };
 
-export const deletePatient = async (id:number) => {
+export const deletePatient = async (id: number) => {
   const conn = await db();
   return conn
     .query(`DELETE FROM patients WHERE patient_id= ${id} `)
