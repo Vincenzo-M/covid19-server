@@ -25,7 +25,6 @@ router.get("/", async (req: Request, res: Response) => {
 router.get("/:id", async ({ params: { id } }: Request, res: Response) => {
   const patient = await showPatientAndSwabs(Number(id));
   //TODO creare un unico oggetto paziente con dentro l'array di oggetti swabs
-  let finalResult: Patient[] = [];
   //   {
   //     "patient_id": 1,
   //     "name": "alberto",
@@ -35,6 +34,7 @@ router.get("/:id", async ({ params: { id } }: Request, res: Response) => {
   //     "email": "alberto@emailcambiata.com",
   //     "phone": 38013973332,
   //     "hasCovid": 0,
+
   //     "swab_id": 1,
   //     "team_id": 1,
   //     "date": "2021-02-13T13:00:00.000Z",
@@ -42,32 +42,47 @@ router.get("/:id", async ({ params: { id } }: Request, res: Response) => {
   //     "done": 0,
   //     "positive_res": 0
   // },
-  // patient.forEach(
-  //   ({ patient_id, name, fiscal_code, dob,address,email,phone,hasCovid,swab_id,team_id,date,type,done,positive_res  //     };
-  //   }
-  // );
-  // ticketsFetched.forEach(
-  //   ({
-  //     ticket_id,
-  //     bet_status,
-  //     team_1,
-  //     team_2,
-  //     result,
-  //     odd,
-  //     commence_time,
-  //   }) => {
-  //     finalResult[ticket_id].ticket.push({
-  //       bet_status,
-  //       team_1,
-  //       team_2,
-  //       result,
-  //       odd,
-  //       commence_time,
-  //     });
-  //   }
-  // );
-  // res.json(finalResult.filter((i) => i !== null));
-  res.json(patient);
+
+  let finalResult: Patient = patient.reduce(
+    (
+      acc: Patient,
+      {
+        patient_id,
+        name,
+        fiscal_code,
+        dob,
+        address,
+        email,
+        phone,
+        hasCovid,
+        swab_id,
+        team_id,
+        date,
+        type,
+        done,
+        positive_res,
+      }: any
+    ) => {
+      return {
+        patient_id,
+        name,
+        fiscal_code,
+        dob,
+        address,
+        email,
+        phone,
+        hasCovid,
+        swabs: [
+          { swab_id, team_id, date, type, done, positive_res, patient_id },
+          ...acc.swabs,
+        ],
+      };
+    },
+    { swabs: [] }
+  );
+
+  console.log(finalResult);
+  res.json(finalResult);
 });
 
 router.post(
