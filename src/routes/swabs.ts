@@ -9,6 +9,7 @@ import {
 } from "./../middlewares/dbQueries";
 import express from "express";
 import moment from "moment";
+import Patient from "../interfaces";
 //import Swab from '../interfaces/index';
 
 const router = express.Router();
@@ -40,6 +41,40 @@ router.delete("/:id", async ({ params: { id } }, res) => {
 
 router.get("/", async ({ query: { patient_id } }, res) => {
   const swabs = await getSwabForPatient(Number(patient_id));
+  //TODO creare un unico oggetto paziente con dentro l'array di oggetti swabs
+  let finalResult: Patient[] = [];
+  // swabs.forEach(
+  //   ({ ticket_id, bolletta_status, bet_import, max_win }) => {
+  //     finalResult[ticket_id] = {
+  //       ticket_id,
+  //       bolletta_status,
+  //       bet_import,
+  //       max_win,
+  //       ticket: [],
+  //     };
+  //   }
+  // );
+  // ticketsFetched.forEach(
+  //   ({
+  //     ticket_id,
+  //     bet_status,
+  //     team_1,
+  //     team_2,
+  //     result,
+  //     odd,
+  //     commence_time,
+  //   }) => {
+  //     finalResult[ticket_id].ticket.push({
+  //       bet_status,
+  //       team_1,
+  //       team_2,
+  //       result,
+  //       odd,
+  //       commence_time,
+  //     });
+  //   }
+  // );
+  // res.json(finalResult.filter((i) => i !== null));
   res.json(swabs);
 });
 
