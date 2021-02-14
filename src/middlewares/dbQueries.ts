@@ -29,15 +29,6 @@ export const getSwabById = async (swab_id: string) => {
       throw new Error(err);
     });
 };
-export const getSwab = async (id: number) => {
-  const conn = await db();
-  return conn
-    .query(`SELECT * FROM swabs WHERE swab_id = ${id}`)
-    .catch((err: string | undefined) => {
-      console.log(err);
-      throw new Error(err);
-    });
-};
 
 export const getSwabForPatient = async (id: number) => {
   const conn = await db();

@@ -41,40 +41,7 @@ router.delete("/:id", async ({ params: { id } }, res) => {
 
 router.get("/", async ({ query: { patient_id } }, res) => {
   const swabs = await getSwabForPatient(Number(patient_id));
-  //TODO creare un unico oggetto paziente con dentro l'array di oggetti swabs
-  let finalResult: Patient[] = [];
-  // swabs.forEach(
-  //   ({ ticket_id, bolletta_status, bet_import, max_win }) => {
-  //     finalResult[ticket_id] = {
-  //       ticket_id,
-  //       bolletta_status,
-  //       bet_import,
-  //       max_win,
-  //       ticket: [],
-  //     };
-  //   }
-  // );
-  // ticketsFetched.forEach(
-  //   ({
-  //     ticket_id,
-  //     bet_status,
-  //     team_1,
-  //     team_2,
-  //     result,
-  //     odd,
-  //     commence_time,
-  //   }) => {
-  //     finalResult[ticket_id].ticket.push({
-  //       bet_status,
-  //       team_1,
-  //       team_2,
-  //       result,
-  //       odd,
-  //       commence_time,
-  //     });
-  //   }
-  // );
-  // res.json(finalResult.filter((i) => i !== null));
+
   res.json(swabs);
 });
 
@@ -84,18 +51,16 @@ router.post(
     { body: { team_id, date, type, patient_id, done, positive_res } },
     res
   ) => {
-    await addSwab(team_id, date, type, patient_id, done, positive_res);
-    res.json({ status: "Added" });
-  }
-);
-router.post(
-  "/",
-  async (
-    { body: { team_id, date, type, patient_id, done, positive_res } },
-    res
-  ) => {
-    await addSwab(team_id, date, type, patient_id, done, positive_res);
-    res.json({ status: "Added" });
+    try {
+      await addSwab(team_id, date, type, patient_id, done, positive_res);
+      res.json({ status: "Added" });
+    } catch ({ message }) {
+      if (message.includes("ER_DUP_ENTRY"))
+        return res
+          .status(400)
+          .send("Swab's patient and execution date already registered");
+      else return res.status(500).send("Internal server error, sorry.");
+    }
   }
 );
 
@@ -120,10 +85,5 @@ router.put(
     res.json({ status: "Swab modified" });
   }
 );
-
-router.delete("/:id", async ({ params: { id } }, res) => {
-  await deleteSwab(id);
-  res.json({ status: "success" });
-});
 
 export default router;

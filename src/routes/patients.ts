@@ -24,25 +24,6 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/:id", async ({ params: { id } }: Request, res: Response) => {
   const patient = await showPatientAndSwabs(Number(id));
-  //TODO creare un unico oggetto paziente con dentro l'array di oggetti swabs
-  //   {
-  //     "patient_id": 1,
-  //     "name": "alberto",
-  //     "fiscal_code": "TRRLRT93L13C351X",
-  //     "dob": "2021-07-12T22:00:00.000Z",
-  //     "address": "via cambiata2",
-  //     "email": "alberto@emailcambiata.com",
-  //     "phone": 38013973332,
-  //     "hasCovid": 0,
-
-  //     "swab_id": 1,
-  //     "team_id": 1,
-  //     "date": "2021-02-13T13:00:00.000Z",
-  //     "type": "rap",
-  //     "done": 0,
-  //     "positive_res": 0
-  // },
-
   let finalResult: Patient = patient.reduce(
     (
       acc: Patient,
@@ -80,8 +61,6 @@ router.get("/:id", async ({ params: { id } }: Request, res: Response) => {
     },
     { swabs: [] }
   );
-
-  console.log(finalResult);
   res.json(finalResult);
 });
 
@@ -93,11 +72,7 @@ router.post(
     }: Request,
     res: Response
   ) => {
-    const patients = JSON.parse(JSON.stringify(await getAllPatients()));
-    const checkPatients = patients.some(
-      (p: Patient) => p.fiscal_code === String(fiscal_code)
-    );
-    if (!checkPatients) {
+    try {
       await newPatient(
         name,
         email,
@@ -108,8 +83,11 @@ router.post(
         hasCovid
       );
       return res.json({ status: "success" });
+    } catch ({ message }) {
+      if (message.includes("ER_DUP_ENTRY"))
+        return res.status(400).send("Patient already registered");
+      else return res.status(500).send("Internal server error, sorry.");
     }
-    return res.json({ message: "Error" });
   }
 );
 
@@ -119,19 +97,13 @@ router.put(
     { params: { id }, body: { email, address, phone, hasCovid } }: Request,
     res: Response
   ) => {
-    const patientToUpdate = await updatePatient(
-      Number(id),
-      email,
-      address,
-      phone,
-      hasCovid
-    );
+    await updatePatient(Number(id), email, address, phone, hasCovid);
     res.json({ status: "success" });
   }
 );
 
 router.delete("/:id", async ({ params: { id } }: Request, res: Response) => {
-  const deleteAccount = await deletePatient(Number(id));
+  await deletePatient(Number(id));
   res.json({ status: "success" });
 });
 
